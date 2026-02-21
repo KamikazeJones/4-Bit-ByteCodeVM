@@ -28,7 +28,9 @@ Diese Projektdatei dient der Verwaltung von Tickets, Teilzielen und Aufgaben.
 
 Teilziele mit ihren Aufgaben und Unteraufgaben inklusive zugehöriger Ticketnummern.
 
-### Teilziel – Einen Test mit unity.c erstellen
+### Teilziel – Einen Test mit unity.c erstellen ✅
+
+mit "make test" bzw. "make TARGET=test_interpreter test" wir der Test test_interpreter compiliert und dann ausgeführt.
 
 Aufgaben:
 
@@ -37,7 +39,7 @@ Aufgaben:
 - [x] #10002 unity.c und Header herunterladen und nach modules/unity kopieren ✅
 - [x] #10003 unity.h und unity_internals.h nach headers kopieren ✅
 
-#### [ ] #10004 einen Test kompilieren
+#### [x] #10004 einen Test kompilieren ✅
     
 ### [x] #10005 ein Makefile erstellen, um einen Test zu kompilieren ✅
     
