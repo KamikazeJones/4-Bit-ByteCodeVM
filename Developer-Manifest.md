@@ -80,4 +80,18 @@ Wir definieren ein paar Regeln, die es im folgenden zu beachten gilt:
 13. Die Dokumentation erfolgt über mkdocs im Unterverzeichnis docs.
     Änderungen an der API erfordern immer nach der Erledigung auch ein weitere Unteraufgabe mitsamt Ticket, in der die Dokumentation unter docs angepasst wird!
     In der Dokumentation wird das Ticket referenziert, welches die Aufgabe/Unteraufgabe
-    erledigt hat, nicht das Ticket zu Änderung der Dokumentation! 
+    erledigt hat, nicht das Ticket zu Änderung der Dokumentation!
+
+14. Bevor Code geändert wird, muss ein Ticket erstellt werden. Der Tickettext
+    soll kurz erläutern:
+
+    - Welches Problem soll beantwortet bzw. welches Ziel erreicht werden?
+    - Warum ist diese Änderung nötig?
+    - Welche Dateien könnten betroffen sein?
+
+    Nur nach Zustimmung des Auftraggebers wird die betreffende Datei geändert.
+    Dieses Verfahren stellt sicher, dass alle Arbeiten nachvollziehbar sind und
+    keine unautorisierte Implementierung entsteht (siehe Ticket #10029).
+
+
+ 

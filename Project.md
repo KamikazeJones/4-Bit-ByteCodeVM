@@ -2,7 +2,7 @@
 
 ## Ticket
 
-Aktuelle Ticketnummer: **#10013**
+Aktuelle Ticketnummer: **#10031**
 
 > Hinweis: Bei jeder neuen Aufgabe oder Unteraufgabe wird diese Nummer
 > hier inkrementiert und die neue Nummer der Aufgabe/Unteraufgabe
@@ -14,6 +14,59 @@ Aktuelle Ticketnummer: **#10013**
 
 Ein Interpreter, Assembler, Linker und Debugger für einen 4-Bit-Bytecode.
 Diese Projektdatei dient der Verwaltung von Tickets, Teilzielen und Aufgaben.
+
+### Assembler für einen 4-Bit-Bytecode
+
+Es wird ein Assembler geschrieben, der die folgenden 16 Memnonics kennt.
+
+Jeder Bytecode‑Opcode ist 4 Bit lang (eine Nibble), also passen zwei Opcodes in ein Byte.
+Werte auf dem Stack und beim Lesen und schreiben sind generell 8 Bit (1 Byte) lang.
+Adressen werden als 2-Byte (little Endian) auf dem Stack angegeben.
+
+Eine Besonderheit ist, dass der Assembler keine Leerzeichen benötigt, um die Token zu erkennen.
+Opcodes sind entweder zweistellig (alphanumerisch), oder alternativ einstellig (Sonderzeichen).
+
+der Opcode PS erwartet im folgenden Byte ein Byte codiert als zweistellige Hexadezimale Zahl.
+
+Opcode‑Tabelle (Nibble → Opcode)
+
+| Nibble | Symbol | Mnemonic | Beschreibung |
+|--------|--------|----------|--------------|
+| 0      | `$`    | PS       | push following byte (Imm8) to data stack |
+| 1      | `<`    | SL       | (v -- 2*v) shift left (logical) |
+| 2      | `>`    | SR       | (v -- v/2) shift right (logical) |
+| 3      | `@`    | RD       | (adr -- val) pop adr → push mem[adr] |
+| 4      | `!`    | WR       | (val adr -- ) pop val, pop adr → mem[addr]=val |
+| 5      | `?`    | JZ       | (val adr -- ) pop val, pop adr → if val==0 then IP := adr |
+| 6      | `+`    | AD       | (v1 v2 -- sum_low) pop a, pop b → berechne s = a + b + (implizites Carry).<br>Das niederwertige Byte von s (`s & 0xFF`) wird auf den Datenstack abgelegt. Bei einem Überlauf (s > 0xFF) setzt der Interpreter ein internes Carry‑Flag auf 1, sonst auf 0. |
+| 7      | `=`    | DP       | (v -- v v) duplicate TOS |
+| 8      | `/`    | DR       | (v -- ) drop TOS |
+| 9      | `&`    | AN       | (v1 v2 -- v1 & v2) AND |
+| A      | `|`    | OR       | (v1 v2 -- v1 | v2) OR |
+| B      | `#`    | XR       | (v1 v2 -- v1 ^ v2) XOR |
+| C      | `*`    | CL       | (adr -- /R: radr) CALL: pop adr; push return address on return stack; PC := adr |
+| D      | `;`    | RT       | (/R: radr -- ) RET: return to radr |
+| E      | `-`    | RESERVED | reserved / future |
+| F      | `.`    | HL       | HALT, stops VM
+
+Bemerkungen:
+- `PS` (`$`) liest ein nachfolgendes Byte Imm8 und pusht diesen Wert auf den Datenstack.
+
+Immediate‑/Nibble‑Encoding
+
+- Zwei Opcodes pro Byte: High‑Nibble zuerst, dann Low‑Nibble.
+- Wenn ein Opcode ein Immediate‑Byte benötigt (z.B. `PS`), 
+  so folgt dieses Immediate immer als ganzes Byte unmittelbar nach dem Byte, das die 
+  beiden Nibbles enthält.
+  - Beispiel: Byte N enthält [OP1:high, OP2:low]. Wenn OP2 (low nibble) ein Imm8 benötigt, 
+    dann ist Imm8 das nächste Byte (Byte N+1). Gleiches gilt, wenn OP1 ein Imm8 verlangt: 
+    Imm8 kommt ebenfalls als nächstes Byte nach Byte N.
+    Wenn sowohl OP1 als auch OP2 PS ist, so ist das Byte an Adresse N+1 der Wert für OP1 und das Byte an Adresse N+2 ist der Wert für OP2.
+
+Stack‑ und Speicher‑Semantik
+
+Wie genau der Datenstack realisiert ist, ist ein Implementierungsdetail, um das sich der Assembler nicht kümmern muss.
+
 
 ---
 
@@ -28,7 +81,68 @@ Diese Projektdatei dient der Verwaltung von Tickets, Teilzielen und Aufgaben.
 
 Teilziele mit ihren Aufgaben und Unteraufgaben inklusive zugehöriger Ticketnummern.
 
-### Teilziel – Einen Test mit unity.c erstellen ✅
+### [ ] #10014 Teilziel - schreibe enen Assembler für einen 4-Bit-Bytecode
+
+Aufgaben:
+
+#### [x] #10015 Beschreibe den Assembler
+#### [ ] #10016 Implementiere den Assembler
+- [x] #10017 erstelle einen enum für die 16 Opcodes ✅
+- [x] #10018 helper-Funktionen für dynamisches Byte-Array erstellt
+- [x] #10019 Test für dynamisches Byte-Array schreiben ✅
+- [ ] #10020 Prüfe und dokumentiere alle bisher ungerechtfertigten
+  Dateiänderungen (entsprechende Einträge in Project.md ergänzen).
+- [x] #10021 Verschiebe dyn_bytearray.h nach headers/ und passe Makefile +
+  Includes an (inkl. Projekt­dokumentation) ✅
+  - `dyn_bytearray.h` aus `modules/helpers` in `headers/` verschoben.
+  - Makefile‑CFLAGS aktualisiert, um nur noch `-Iheaders` zu nutzen.
+  - keine Quelländerung notwendig (Include-Pfade bleiben gleich).
+- [x] #10022 Verschiebe test_interpreter.c nach test/interpreter und passe Makefile an ✅
+  - neue Verzeichnisstruktur `test/interpreter` angelegt
+  - Datei dorthin verschoben
+  - `Makefile`-Variable `TEST_MAIN` und Regel für Objektdatei aktualisiert
+- [x] #10023 Entferne Verzeichnis `test/` und konsolidiere in `tests/`; passe Makefile an ✅
+  - `test/interpreter` nach `tests/` verschoben
+  - altes `test/` gelöscht
+  - `Makefile`-Referenzen (`TEST_MAIN` und Objektregel) angepasst
+  - erneuter `make test` bestätigte funktionierenden Build
+- [x] #10024 Ergänze einen weiteren dyn_bytearray-Test mit growth (initial 2, chunk 5); füge 1000 Elemente ein und prüfe Größe/Kapazität alle 103 Schritte ✅
+- [ ] #10025 Parameterisiere den growth-Test so, dass init, chunk, total und step
+  als Argumente übergeben werden können; führe ihn mehrfach mit verschiedenen
+  Wertepaaren aus.
+
+### [ ] #10026 Teilziel - Tests für den Assembler machen
+
+Aufgaben:
+#### [x] #10027 definiere eine Schnittstelle für den Assembler
+- `headers/assembler.h` mit enum, mnemonic struct und Aufrufprototypen erstellt
+- `modules/assembler/assembler.c` referenziert nun den Header und enthält stub für assemble()
+
+#### [x] #10029 Fehler: unerlaubte Assembler-Implementierung ✅
+- kompletten Parsercode, der ohne Ticket entstanden war, zurückgesetzt
+- Ticket dokumentiert und Ursachennotiz oben hinzugefügt
+
+#### [ ] #10028 Test: Programm als String - prüfe erzeugte Bytefolge
+- neue Datei `tests/assembler/test_assembler.c` angelegt
+- Test verwendet gültiges Programmstring ("$0F+AD") und prüft gegen
+  erwartete Bytefolge; dieser Test wird zunächst fehlschlagen, bis Parser
+  implementiert ist
+
+#### [ ] #10030 Ergänze Developer Manifest
+- Der Agent öffnet für jede Arbeit, die direkt den Code betrifft, ein Ticket.
+Beispiel: “#14711 Implementiere den Parser” – dort kann dann später der
+Code stehen, der $0F+AD in die erwarteten Bytes übersetzt.
+
+- Bevor der Agent eine Datei ändert, gibt er dem Anwender eine kurze Beschreibung:
+
+  - Welches Problem löse der Agent?
+  - Warum ist das nötig?
+  - Was genau soll geändert oder ergänzt werden?
+Der Anwender kann dann zustimmen oder zusätzliche Anforderungen nennen.
+
+#### [ ] #10031 In allen .md-Dateien und allen .c und .h Dateien LF verwenden, nicht CR LF
+
+### [x] #10000 Teilziel – Einen Test mit unity.c erstellen ✅
 
 mit "make test" bzw. "make TARGET=test_interpreter test" wir der Test test_interpreter compiliert und dann ausgeführt.
 
@@ -41,10 +155,10 @@ Aufgaben:
 
 #### [x] #10004 einen Test kompilieren ✅
     
-### [x] #10005 ein Makefile erstellen, um einen Test zu kompilieren ✅
+#### [x] #10005 ein Makefile erstellen, um einen Test zu kompilieren ✅
     
 - [x] #10006 In Zeile 26 gibt es einen Fehler im Makefile ✅
-    - $(CC) $(CFLAGS) -o $@ $^
+    - `$(CC) $(CFLAGS) -o $@ $^`
     - Lösung: In einem Makefile müssen alle Befehlszeilen mit einem echten TAB-Zeichen beginnen, nicht mit Leerzeichen.
     
 - [x] #10007 Fehlermeldung ✅
@@ -56,7 +170,7 @@ Aufgaben:
     - Lösung: Im makefile -Iheaders bei CFLAGS hinzugefügt: CFLAGS  := -std=c11 -Wall -Wextra -O2 -Iheaders
 
 - [x] #10009 Erstelle alle benötigten Dateien für einen ersten Test ✅
-    - [x] #10010 interpreter.c erstellen, das zwei zahlen addiert ✅
+    - [x] #10010 interpreter.c erstellen, mit Funktion, die zwei Zahlen addiert ✅
     - [x] #10011 interpreter.h erstellt mit add-Funktion ✅
     - [x] #10012 test_interpreter.c ruft add auf ✅
 
