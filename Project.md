@@ -2,7 +2,7 @@
 
 ## Ticket
 
-Aktuelle Ticketnummer: **#10031**
+Aktuelle Ticketnummer: **#10045**
 
 > Hinweis: Bei jeder neuen Aufgabe oder Unteraufgabe wird diese Nummer
 > hier inkrementiert und die neue Nummer der Aufgabe/Unteraufgabe
@@ -90,7 +90,7 @@ Aufgaben:
 - [x] #10017 erstelle einen enum für die 16 Opcodes ✅
 - [x] #10018 helper-Funktionen für dynamisches Byte-Array erstellt
 - [x] #10019 Test für dynamisches Byte-Array schreiben ✅
-- [ ] #10020 Prüfe und dokumentiere alle bisher ungerechtfertigten
+- [x] #10020 Prüfe und dokumentiere alle bisher ungerechtfertigten
   Dateiänderungen (entsprechende Einträge in Project.md ergänzen).
 - [x] #10021 Verschiebe dyn_bytearray.h nach headers/ und passe Makefile +
   Includes an (inkl. Projekt­dokumentation) ✅
@@ -107,11 +107,38 @@ Aufgaben:
   - `Makefile`-Referenzen (`TEST_MAIN` und Objektregel) angepasst
   - erneuter `make test` bestätigte funktionierenden Build
 - [x] #10024 Ergänze einen weiteren dyn_bytearray-Test mit growth (initial 2, chunk 5); füge 1000 Elemente ein und prüfe Größe/Kapazität alle 103 Schritte ✅
-- [ ] #10025 Parameterisiere den growth-Test so, dass init, chunk, total und step
+- [x] #10025 Parameterisiere den growth-Test so, dass init, chunk, total und step
   als Argumente übergeben werden können; führe ihn mehrfach mit verschiedenen
   Wertepaaren aus.
+- [ ] #10036 Teste den Assembler (assembler.c), analysiere die Fehler und behebe sie
+  - Beschreibung: Tests für die Sprung‑Opcodes `JZ`, `CL` und `RT` wurden erstellt (Datei: `tests/assembler/test_jumps.c`).
+  - Status: Testdatei angelegt; Tests zur Verifikation des Nibble‑Packings.
+- [x] #10037 Zielname im Makefile angleichen ✅
+    - Umbenennen des Binaries `assembler_test` in `test_assembler`
+    - Anpassung der `all`/`test` Regeln und Verweise
+- [x] #10038 Erstelle das Hauptprogramm für assembler. Es soll das Programm als Parameter entgegennehmen und entweder den Bytecode als Hexadezimale Zahlen auf die Konsole ausgeben oder aber bei Schalter -o den binären Code in eine Datei schreiben.
+  - `modules/assembler/main.c` angelegt als Startpunkt
+  - Lesen der Eingabedatei, Aufruf von `assemble()` und Ausgabe/`-o`-Option implementiert
+  - Makefile wurde erweitert, um CLI‑Binary `assembler` zu bauen
+  - gebaut wird es mit `make assembler` (oder einfach `make`)
+- [x] #10041 In der Dokumentation hat der Assembler einige Optionen und Schalter. Dies muss noch implementiert werden
+- [x] #10042 Der assembler lässt sich per make assembler nicht bauen. make clean funktioniert ebenfalls nicht. Das makefile scheint defekt zu sein.
+  - Lösung: das Makefile wurde überarbeitet
+- [x] #10043 assembler -s "PS 42 HL" gibt "assembly fail" aus
+- [x] #10044 ./assembler -s 'PS $42 HL' muss einen Fehler ausgeben, da das Byte für das erste PS nicht angegeben wurde!
 
-### [ ] #10026 Teilziel - Tests für den Assembler machen
+#### [ ] #10045 Präzisiere Rule-16: `Project.md` Ausnahme
+- Beschreibung: Ergänze Rule-16 um den Satz, dass Änderungen an `Project.md` zur Ticketverwaltung nicht als zusätzliche Dateiänderung gelten.
+
+#### [x] #10039 Erstelle eine Dokumentation für assembler mit mkdocs
+  - `docs/assembler.md` erweitert: beschreibt nun Optionen `-c <datei>` und `-s|--source <string>`; Usage und Beispiele hinzugefügt
+
+#### [x] #10040 Fix: mkdocs YAML Syntaxfehler in `docs/mkdocs.yml`
+- Problem: `mkdocs serve` schlug fehl mit einer YAML-Parsing-Fehlermeldung (Tabulatorzeichen an Zeile 4).
+- Lösungsansatz: Ersetze Tabulatoren durch Spaces in `docs/mkdocs.yml`, prüfe die YAML-Syntax und starte den `mkdocs`-Server neu, um die Doku zu verifizieren.
+- die Dateien für mkdocs müssen in das Verzeichnis docs/docs
+
+### [x] #10026 Teilziel - Tests für den Assembler machen
 
 Aufgaben:
 #### [x] #10027 definiere eine Schnittstelle für den Assembler
@@ -122,13 +149,21 @@ Aufgaben:
 - kompletten Parsercode, der ohne Ticket entstanden war, zurückgesetzt
 - Ticket dokumentiert und Ursachennotiz oben hinzugefügt
 
-#### [ ] #10028 Test: Programm als String - prüfe erzeugte Bytefolge
+#### [x] #10028 Test: Programm als String - prüfe erzeugte Bytefolge
 - neue Datei `tests/assembler/test_assembler.c` angelegt
 - Test verwendet gültiges Programmstring ("$0F+AD") und prüft gegen
   erwartete Bytefolge; dieser Test wird zunächst fehlschlagen, bis Parser
   implementiert ist
+- [x] #10032 HL-Mnemonic in Tests korrigieren ('.' statt 'F'), Kommentar anpassen ✅
+- [x] #10033 Test angepasst so dass der buf über setUp und tearDown verwaltet wird.
+- [x] #10034 Es gibt einen Compilerfehler: odules/assembler/assembler.c:108:5: error: redefinition of ‘assemble’
+  - Der stub wurde entfernt, der Parser wurde aktiviert muss aber geprüft werden
+- [x] #10035 make test compiliert nicht: "undefined reference to `main'  - Ergänze fehlende `main()` in `tests/assembler/test_assembler.c`
+  - Füge RUN_TEST-Aufrufe für alle fünf Fälle hinzu
+  - Testprogramm nach Änderung neu bauen und ausführen
+  - Funktion test_assemble_invalid_program verschoben vor Aufruf
 
-#### [ ] #10030 Ergänze Developer Manifest
+#### [x] #10030 Ergänze Developer Manifest ✅
 - Der Agent öffnet für jede Arbeit, die direkt den Code betrifft, ein Ticket.
 Beispiel: “#14711 Implementiere den Parser” – dort kann dann später der
 Code stehen, der $0F+AD in die erwarteten Bytes übersetzt.
@@ -140,7 +175,8 @@ Code stehen, der $0F+AD in die erwarteten Bytes übersetzt.
   - Was genau soll geändert oder ergänzt werden?
 Der Anwender kann dann zustimmen oder zusätzliche Anforderungen nennen.
 
-#### [ ] #10031 In allen .md-Dateien und allen .c und .h Dateien LF verwenden, nicht CR LF
+#### [x] #10031 In allen .md-Dateien und allen .c und .h Dateien LF verwenden, nicht CRLF ✅
+Dies wurde manuell umgestellt per VS Code.
 
 ### [x] #10000 Teilziel – Einen Test mit unity.c erstellen ✅
 
